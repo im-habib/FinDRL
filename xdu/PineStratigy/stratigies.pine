@@ -1,0 +1,369 @@
+//@version=6
+strategy("20 Strategies with Stochastic RSI", overlay=true, commission_type=strategy.commission.percent, commission_value=0.1, slippage=0, default_qty_type=strategy.percent_of_equity, default_qty_value=100, initial_capital=1000, process_orders_on_close=true)
+
+// ===== Common Inputs =====
+use_strategy_1 = input.bool(true, title="Enable Gaussian Channel + Stochastic RSI")
+use_strategy_2 = input.bool(true, title="Enable Moving Average Crossover + Stochastic RSI")
+use_strategy_3 = input.bool(true, title="Enable Bollinger Bands + Stochastic RSI")
+use_strategy_4 = input.bool(true, title="Enable Parabolic SAR + Stochastic RSI")
+use_strategy_5 = input.bool(true, title="Enable Ichimoku Cloud + Stochastic RSI")
+use_strategy_6 = input.bool(true, title="Enable MACD + Stochastic RSI")
+use_strategy_7 = input.bool(true, title="Enable RSI + Stochastic RSI")
+use_strategy_8 = input.bool(true, title="Enable ADX + Stochastic RSI")
+use_strategy_9 = input.bool(true, title="Enable ATR + Stochastic RSI")
+use_strategy_10 = input.bool(true, title="Enable Volume Weighted MA + Stochastic RSI")
+use_strategy_11 = input.bool(true, title="Enable Donchian Channel + Stochastic RSI")
+use_strategy_12 = input.bool(true, title="Enable Keltner Channel + Stochastic RSI")
+use_strategy_13 = input.bool(true, title="Enable SuperTrend + Stochastic RSI")
+use_strategy_14 = input.bool(true, title="Enable Fibonacci Retracement + Stochastic RSI")
+use_strategy_15 = input.bool(true, title="Enable Price Action + Stochastic RSI")
+use_strategy_16 = input.bool(true, title="Enable Volume Spike + Stochastic RSI")
+use_strategy_17 = input.bool(true, title="Enable Momentum + Stochastic RSI")
+use_strategy_18 = input.bool(true, title="Enable Williams %R + Stochastic RSI")
+use_strategy_19 = input.bool(true, title="Enable Chaikin Money Flow + Stochastic RSI")
+use_strategy_20 = input.bool(true, title="Enable On-Balance Volume + Stochastic RSI")
+
+// Stochastic RSI Inputs
+stoch_rsi_length = input.int(14, title="Stochastic RSI Length")
+k = input.int(3, title="Stochastic RSI %K")
+d = input.int(3, title="Stochastic RSI %D")
+
+// Calculate Stochastic RSI
+rsi = ta.rsi(close, stoch_rsi_length)
+stoch_rsi = (rsi - ta.lowest(rsi, stoch_rsi_length)) / (ta.highest(rsi, stoch_rsi_length) - ta.lowest(rsi, stoch_rsi_length)) * 100
+k_line = ta.sma(stoch_rsi, k)
+d_line = ta.sma(k_line, d)
+
+// ===== Strategy 1: Gaussian Channel + Stochastic RSI =====
+length_gc = input.int(20, title="Gaussian Channel Length")
+mult_gc = input.float(2.0, title="Gaussian Channel Multiplier")
+
+basis_gc = ta.sma(close, length_gc)
+dev_gc = mult_gc * ta.stdev(close, length_gc)
+upper_gc = basis_gc + dev_gc
+lower_gc = basis_gc - dev_gc
+
+long_condition_1 = close > upper_gc and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_1 = close < upper_gc
+
+if (use_strategy_1)
+    if (long_condition_1)
+        strategy.entry("Long 1", strategy.long)
+    if (exit_condition_1)
+        strategy.close("Long 1")
+
+// ===== Strategy 2: Moving Average Crossover + Stochastic RSI =====
+fast_length = input.int(9, title="Fast MA Length")
+slow_length = input.int(21, title="Slow MA Length")
+
+fast_ma = ta.sma(close, fast_length)
+slow_ma = ta.sma(close, slow_length)
+
+long_condition_2 = ta.crossover(fast_ma, slow_ma) and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_2 = ta.crossunder(fast_ma, slow_ma)
+
+if (use_strategy_2)
+    if (long_condition_2)
+        strategy.entry("Long 2", strategy.long)
+    if (exit_condition_2)
+        strategy.close("Long 2")
+
+// ===== Strategy 3: Bollinger Bands + Stochastic RSI =====
+bb_length = input.int(20, title="Bollinger Bands Length")
+bb_mult = input.float(2.0, title="Bollinger Bands Multiplier")
+
+basis_bb = ta.sma(close, bb_length)
+dev_bb = bb_mult * ta.stdev(close, bb_length)
+upper_bb = basis_bb + dev_bb
+lower_bb = basis_bb - dev_bb
+
+long_condition_3 = close > upper_bb and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_3 = close < upper_bb
+
+if (use_strategy_3)
+    if (long_condition_3)
+        strategy.entry("Long 3", strategy.long)
+    if (exit_condition_3)
+        strategy.close("Long 3")
+
+// ===== Strategy 4: Parabolic SAR + Stochastic RSI =====
+sar_step = input.float(0.02, title="SAR Step")
+sar_max = input.float(0.2, title="SAR Max")
+
+sar = ta.sar(sar_step, sar_max, sar_max)
+
+long_condition_4 = close > sar and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_4 = close < sar
+
+if (use_strategy_4)
+    if (long_condition_4)
+        strategy.entry("Long 4", strategy.long)
+    if (exit_condition_4)
+        strategy.close("Long 4")
+
+// ===== Strategy 5: Ichimoku Cloud + Stochastic RSI =====
+tenkan_length = input.int(9, title="Tenkan Sen Length")
+kijun_length = input.int(26, title="Kijun Sen Length")
+senkou_length = input.int(52, title="Senkou Span Length")
+
+tenkan = (ta.highest(high, tenkan_length) + ta.lowest(low, tenkan_length)) / 2
+kijun = (ta.highest(high, kijun_length) + ta.lowest(low, kijun_length)) / 2
+senkou_a = (tenkan + kijun) / 2
+senkou_b = (ta.highest(high, senkou_length) + ta.lowest(low, senkou_length)) / 2
+
+long_condition_5 = close > senkou_a and close > senkou_b and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_5 = close < senkou_a or close < senkou_b
+
+if (use_strategy_5)
+    if (long_condition_5)
+        strategy.entry("Long 5", strategy.long)
+    if (exit_condition_5)
+        strategy.close("Long 5")
+
+// ===== Strategy 6: MACD + Stochastic RSI =====
+macd_fast_length = input.int(12, title="MACD Fast Length")
+macd_slow_length = input.int(26, title="MACD Slow Length")
+macd_signal_length = input.int(9, title="MACD Signal Length")
+
+[macd_line, signal_line, _] = ta.macd(close, macd_fast_length, macd_slow_length, macd_signal_length)
+
+long_condition_6 = ta.crossover(macd_line, signal_line) and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_6 = ta.crossunder(macd_line, signal_line)
+
+if (use_strategy_6)
+    if (long_condition_6)
+        strategy.entry("Long 6", strategy.long)
+    if (exit_condition_6)
+        strategy.close("Long 6")
+
+// ===== Strategy 7: RSI + Stochastic RSI =====
+rsi_length = input.int(14, title="RSI Length")
+rsi_overbought = input.int(70, title="RSI Overbought Level")
+rsi_oversold = input.int(30, title="RSI Oversold Level")
+
+rsi_value = ta.rsi(close, rsi_length)
+
+long_condition_7 = rsi_value < rsi_oversold and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_7 = rsi_value > rsi_overbought
+
+if (use_strategy_7)
+    if (long_condition_7)
+        strategy.entry("Long 7", strategy.long)
+    if (exit_condition_7)
+        strategy.close("Long 7")
+
+// ===== Strategy 8: ADX + Stochastic RSI =====
+adx_length = input.int(14, title="ADX Length")
+adx_threshold = input.int(25, title="ADX Threshold")
+
+adx_value = ta.adx(high, low, close, adx_length)
+
+long_condition_8 = adx_value > adx_threshold and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_8 = adx_value < adx_threshold
+
+if (use_strategy_8)
+    if (long_condition_8)
+        strategy.entry("Long 8", strategy.long)
+    if (exit_condition_8)
+        strategy.close("Long 8")
+
+// ===== Strategy 9: ATR + Stochastic RSI =====
+atr_length = input.int(14, title="ATR Length")
+atr_multiplier = input.float(2.0, title="ATR Multiplier")
+
+atr_value = ta.atr(atr_length)
+atr_upper = close + atr_multiplier * atr_value
+atr_lower = close - atr_multiplier * atr_value
+
+long_condition_9 = close > atr_upper and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_9 = close < atr_lower
+
+if (use_strategy_9)
+    if (long_condition_9)
+        strategy.entry("Long 9", strategy.long)
+    if (exit_condition_9)
+        strategy.close("Long 9")
+
+// ===== Strategy 10: Volume Weighted MA + Stochastic RSI =====
+vwma_length = input.int(20, title="VWMA Length")
+
+vwma_value = ta.vwma(close, vwma_length)
+
+long_condition_10 = close > vwma_value and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_10 = close < vwma_value
+
+if (use_strategy_10)
+    if (long_condition_10)
+        strategy.entry("Long 10", strategy.long)
+    if (exit_condition_10)
+        strategy.close("Long 10")
+
+// ===== Strategy 11: Donchian Channel + Stochastic RSI =====
+donchian_length = input.int(20, title="Donchian Channel Length")
+
+donchian_upper = ta.highest(high, donchian_length)
+donchian_lower = ta.lowest(low, donchian_length)
+
+long_condition_11 = close > donchian_upper and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_11 = close < donchian_lower
+
+if (use_strategy_11)
+    if (long_condition_11)
+        strategy.entry("Long 11", strategy.long)
+    if (exit_condition_11)
+        strategy.close("Long 11")
+
+// ===== Strategy 12: Keltner Channel + Stochastic RSI =====
+keltner_length = input.int(20, title="Keltner Channel Length")
+keltner_mult = input.float(2.0, title="Keltner Channel Multiplier")
+
+basis_keltner = ta.sma(close, keltner_length)
+range_keltner = ta.atr(keltner_length)
+upper_keltner = basis_keltner + keltner_mult * range_keltner
+lower_keltner = basis_keltner - keltner_mult * range_keltner
+
+long_condition_12 = close > upper_keltner and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_12 = close < upper_keltner
+
+if (use_strategy_12)
+    if (long_condition_12)
+        strategy.entry("Long 12", strategy.long)
+    if (exit_condition_12)
+        strategy.close("Long 12")
+
+// ===== Strategy 13: SuperTrend + Stochastic RSI =====
+supertrend_atr_length = input.int(10, title="SuperTrend ATR Length")
+supertrend_mult = input.float(3.0, title="SuperTrend Multiplier")
+
+[supertrend_direction, supertrend_line] = ta.supertrend(supertrend_mult, supertrend_atr_length)
+
+long_condition_13 = supertrend_direction == 1 and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_13 = supertrend_direction == -1
+
+if (use_strategy_13)
+    if (long_condition_13)
+        strategy.entry("Long 13", strategy.long)
+    if (exit_condition_13)
+        strategy.close("Long 13")
+
+// ===== Strategy 14: Fibonacci Retracement + Stochastic RSI =====
+fib_level = input.float(0.618, title="Fibonacci Retracement Level")
+
+swing_high = ta.highest(high, 50)
+swing_low = ta.lowest(low, 50)
+fib_level_price = swing_high - (swing_high - swing_low) * fib_level
+
+long_condition_14 = close > fib_level_price and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_14 = close < fib_level_price
+
+if (use_strategy_14)
+    if (long_condition_14)
+        strategy.entry("Long 14", strategy.long)
+    if (exit_condition_14)
+        strategy.close("Long 14")
+
+// ===== Strategy 15: Price Action + Stochastic RSI =====
+long_condition_15 = close > open and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_15 = close < open
+
+if (use_strategy_15)
+    if (long_condition_15)
+        strategy.entry("Long 15", strategy.long)
+    if (exit_condition_15)
+        strategy.close("Long 15")
+
+// ===== Strategy 16: Volume Spike + Stochastic RSI =====
+volume_length = input.int(20, title="Volume Length")
+volume_mult = input.float(2.0, title="Volume Multiplier")
+
+avg_volume = ta.sma(volume, volume_length)
+volume_spike = volume > volume_mult * avg_volume
+
+long_condition_16 = volume_spike and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_16 = not volume_spike
+
+if (use_strategy_16)
+    if (long_condition_16)
+        strategy.entry("Long 16", strategy.long)
+    if (exit_condition_16)
+        strategy.close("Long 16")
+
+// ===== Strategy 17: Momentum + Stochastic RSI =====
+momentum_length = input.int(14, title="Momentum Length")
+
+momentum_value = close - close[momentum_length]
+
+long_condition_17 = momentum_value > 0 and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_17 = momentum_value < 0
+
+if (use_strategy_17)
+    if (long_condition_17)
+        strategy.entry("Long 17", strategy.long)
+    if (exit_condition_17)
+        strategy.close("Long 17")
+
+// ===== Strategy 18: Williams %R + Stochastic RSI =====
+williams_length = input.int(14, title="Williams %R Length")
+
+williams_value = ta.williamsr(williams_length)
+
+long_condition_18 = williams_value < -20 and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_18 = williams_value > -80
+
+if (use_strategy_18)
+    if (long_condition_18)
+        strategy.entry("Long 18", strategy.long)
+    if (exit_condition_18)
+        strategy.close("Long 18")
+
+// ===== Strategy 19: Chaikin Money Flow + Stochastic RSI =====
+cmf_length = input.int(20, title="CMF Length")
+
+cmf_value = ta.cmf(cmf_length)
+
+long_condition_19 = cmf_value > 0 and k_line > d_line and k_line[1] <= d_line[1]
+exit_condition_19 = cmf_value < 0
+
+if (use_strategy_19)
+    if (long_condition_19)
+        strategy.entry("Long 19", strategy.long)
+    if (exit_condition_19)
+        strategy.close("Long 19")
+
+// ===== Strategy 20: On-Balance Volume + Stochastic RSI =====
+//@version=6
+strategy("OBV + Stochastic RSI", overlay=true, commission_type=strategy.commission.percent, commission_value=0.1, slippage=0, default_qty_type=strategy.percent_of_equity, default_qty_value=100, initial_capital=1000, process_orders_on_close=true)
+
+// On-Balance Volume (OBV) Inputs
+obv_length = input.int(20, title="OBV Smoothing Length")
+
+// Calculate OBV and its moving average
+obv_value = ta.obv
+obv_ma = ta.sma(obv_value, obv_length)
+
+// Stochastic RSI Inputs
+stoch_rsi_length = input.int(14, title="Stochastic RSI Length")
+k = input.int(3, title="Stochastic RSI %K")
+d = input.int(3, title="Stochastic RSI %D")
+
+// Calculate Stochastic RSI
+rsi = ta.rsi(close, stoch_rsi_length)
+stoch_rsi = (rsi - ta.lowest(rsi, stoch_rsi_length)) / (ta.highest(rsi, stoch_rsi_length) - ta.lowest(rsi, stoch_rsi_length)) * 100
+k_line = ta.sma(stoch_rsi, k)
+d_line = ta.sma(k_line, d)
+
+// Entry Condition: OBV above its MA + Stochastic RSI bullish crossover
+long_condition = obv_value > obv_ma and k_line > d_line and k_line[1] <= d_line[1]
+
+// Exit Condition: OBV below its MA
+exit_condition = obv_value < obv_ma
+
+// Execute Trades
+if (long_condition)
+    strategy.entry("Long", strategy.long)
+if (exit_condition)
+    strategy.close("Long")
+
+// Plot OBV and its MA
+plot(obv_value, color=color.blue, title="OBV", display=display.none) // Optional: Set display=display.none if not needed on chart
+plot(obv_ma, color=color.red, title="OBV MA", display=display.none)

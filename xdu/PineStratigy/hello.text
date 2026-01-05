@@ -1,0 +1,292 @@
+I'm providing stratigies and need to Convert all of strategies in to text format
+
+I will give you command after finishing my input
+
+\section*{General Notes on Returns}
+\begin{itemize}
+    \item \textbf{Market Dependence}: The success of each strategy hinges on aligning its assumptions (e.g., trend-following, mean-reversion) with prevailing market conditions (e.g., trending, ranging, volatile).
+    \item \textbf{Stochastic RSI Filter}: All strategies employ a manually calculated Stochastic RSI as a secondary condition:
+    \begin{itemize}
+        \item \textbf{RSI}: \( RSI = 100 - \frac{100}{1 + \frac{\text{Avg Gain}}{\text{Avg Loss}}} \), computed over 14 periods, where Avg Gain/Loss is the average of gains/losses.
+        \item \textbf{Stochastic RSI \%K}: \( \%K = \frac{RSI - \min(RSI, 14)}{\max(RSI, 14) - \min(RSI, 14)} \times 100 \).
+        \item \textbf{Stochastic RSI \%D}: \( \%D = \frac{\sum_{i=1}^{3} \%K_i}{3} \), a 3-period Simple Moving Average (SMA) of \%K.
+        \item Enhances timing by confirming momentum shifts or overbought/oversold states.
+    \end{itemize}
+    \item \textbf{Commission Impact}: A \$0.01 per share commission reduces net returns, especially for high-frequency trades.
+\end{itemize}
+
+\section{Strategy Details and Mathematical Explanations}
+
+\subsection{1. Gaussian Channel}
+\begin{itemize}
+    \item \textbf{Details}: Utilizes a Gaussian channel with a mean (20-period SMA) and an upper band (mean + 2 standard deviations). Entry occurs when price exceeds the upper band and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Mean}: \( \text{Mean} = \frac{\sum_{i=1}^{20} \text{price}_i}{20} \), where \(\text{price}\) is the closing price over 20 periods, representing the average level.
+        \item \textbf{Standard Deviation (\(\sigma\))}: \( \sigma = \sqrt{\frac{\sum_{i=1}^{20} (\text{price}_i - \text{mean})^2}{20}} \), measuring price volatility around the mean.
+        \item \textbf{Upper Band}: \( \text{mean} + 2 \times \sigma \), assuming a normal distribution where \(\sim\)95\% of data lies within 2\(\sigma\).
+        \item \textbf{Condition}: \( \text{price} > \text{upper\_band} \land \text{stochrsi\_k} > \text{stochrsi\_d} \), where \%K > \%D confirms bullish momentum.
+    \end{itemize}
+    \item \textbf{Logic}: Assumes prices deviating 2\(\sigma\) above the mean indicate a strong breakout, validated by upward momentum.
+    \item \textbf{Why Good Returns}: Excels in volatile, trending markets by capturing statistically significant breakouts with sustained momentum.
+\end{itemize}
+
+\subsection{2. MA Crossover}
+\begin{itemize}
+    \item \textbf{Details}: Employs a fast (10-period) and slow (20-period) SMA. Entry when fast MA crosses above slow MA and Stochastic RSI \%K is rising.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Fast MA}: \( \text{Fast MA} = \frac{\sum_{i=1}^{10} \text{close}_i}{10} \), reflecting short-term trend.
+        \item \textbf{Slow MA}: \( \text{Slow MA} = \frac{\sum_{i=1}^{20} \text{close}_i}{20} \), reflecting longer-term trend.
+        \item \textbf{Crossover}: \( \text{fast\_ma} > \text{slow\_ma} \), short-term momentum exceeds long-term.
+        \item \textbf{\%K Rising}: \( \text{stochrsi\_k}_t > \text{stochrsi\_k}_{t-1} \), increasing momentum.
+    \end{itemize}
+    \item \textbf{Logic}: Crossover signals a bullish shift, with rising \%K filtering false signals in choppy markets.
+    \item \textbf{Why Good Returns}: A trend-following strategy thriving in sustained uptrends, with momentum reducing whipsaws.
+\end{itemize}
+
+\subsection{3. Bollinger Bands}
+\begin{itemize}
+    \item \textbf{Details}: Uses Bollinger Bands with a 20-period SMA and bands at \(\pm 2\) standard deviations. Entry when price breaks above the upper band and Stochastic RSI \%K > 20.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{SMA}: \( \text{SMA} = \frac{\sum_{i=1}^{20} \text{close}_i}{20} \), central tendency.
+        \item \textbf{Standard Deviation (\(\sigma\))}: \( \sigma = \sqrt{\frac{\sum_{i=1}^{20} (\text{close}_i - \text{sma})^2}{20}} \), volatility measure.
+        \item \textbf{Upper Band}: \( \text{sma} + 2 \times \sigma \), \textbf{Lower Band}: \( \text{sma} - 2 \times \sigma \), covering \(\sim\)95\% of price action.
+        \item \textbf{Condition}: \( \text{close} > \text{upper} \land \text{stochrsi\_k} > 20 \), breakout with momentum not deeply oversold.
+    \end{itemize}
+    \item \textbf{Logic}: Upper band break signals volatility expansion; \%K > 20 avoids premature entries.
+    \item \textbf{Why Good Returns}: Captures breakout moves in trending or volatile markets, filtering overbought traps.
+\end{itemize}
+
+\subsection{4. Parabolic SAR}
+\begin{itemize}
+    \item \textbf{Details}: Uses Parabolic SAR (0.02, 0.02, 0.2). Entry when price is above SAR and Stochastic RSI \%K crosses above \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{SAR}: \( \text{SAR}_t = \text{SAR}_{t-1} + \text{AF} \times (\text{EP} - \text{SAR}_{t-1}) \), where AF (Acceleration Factor) starts at 0.02, increases by 0.02 to 0.2, and EP (Extreme Point) is the highest high in an uptrend.
+        \item \textbf{Condition}: \( \text{close} > \text{sar} \land \text{k\_crosses\_d} \), where \( \text{k\_crosses\_d} = (\text{stochrsi\_k}_t > \text{stochrsi\_d}_t) \land (\text{stochrsi\_k}_{t-1} \leq \text{stochrsi\_d}_{t-1}) \).
+    \end{itemize}
+    \item \textbf{Logic}: SAR trails price, flipping below in uptrends; \%K crossover confirms momentum shift.
+    \item \textbf{Why Good Returns}: Adapts to trend strength, locking in profits in strong moves, with \%K improving timing.
+\end{itemize}
+
+\subsection{5. Ichimoku Cloud}
+\begin{itemize}
+    \item \textbf{Details}: Uses Ichimoku components: Tenkan (9-period), Kijun (26-period), Senkou Span A/B (52-period). Entry when price is above Span A and B, and Stochastic RSI \%K > 50.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Tenkan}: \( \text{tenkan} = \frac{\max(\text{high}, 9) + \min(\text{low}, 9)}{2} \), short-term equilibrium.
+        \item \textbf{Kijun}: \( \text{kijun} = \frac{\max(\text{high}, 26) + \min(\text{low}, 26)}{2} \), medium-term equilibrium.
+        \item \textbf{Span A}: \( \text{span\_a} = \frac{\text{tenkan} + \text{kijun}}{2} \), cloud boundary.
+        \item \textbf{Span B}: \( \text{span\_b} = \frac{\max(\text{high}, 52) + \min(\text{low}, 52)}{2} \), long-term support.
+        \item \textbf{Condition}: \( \text{close} > \text{span\_a} \land \text{close} > \text{span\_b} \land \text{stochrsi\_k} > 50 \), multi-timeframe trend with momentum.
+    \end{itemize}
+    \item \textbf{Logic}: Cloud confirms trend; \%K > 50 ensures strong bullish momentum.
+    \item \textbf{Why Good Returns}: Multi-timeframe confirmation reduces false signals, strong in sustained uptrends.
+\end{itemize}
+
+\subsection{6. MACD}
+\begin{itemize}
+    \item \textbf{Details}: Uses MACD (12, 26, 9). Entry when MACD line crosses above signal line and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Fast EMA}: \( \text{EMA}_{12} = \text{close} \times \frac{2}{12+1} + \text{EMA}_{12}[t-1] \times \left(1 - \frac{2}{12+1}\right) \), short-term trend.
+        \item \textbf{Slow EMA}: \( \text{EMA}_{26} = \text{close} \times \frac{2}{26+1} + \text{EMA}_{26}[t-1] \times \left(1 - \frac{2}{26+1}\right) \), long-term trend.
+        \item \textbf{MACD Line}: \( \text{macd\_line} = \text{fast\_ema} - \text{slow\_ema} \), momentum differential.
+        \item \textbf{Signal Line}: \( \text{signal\_line} = \text{EMA}(\text{macd\_line}, 9) \), smoothed MACD.
+        \item \textbf{Condition}: \( \text{macd\_line} > \text{signal\_line} \land \text{stochrsi\_k} > \text{stochrsi\_d} \), bullish crossover with momentum.
+    \end{itemize}
+    \item \textbf{Logic}: MACD crossover signals trend shift; \%K > \%D confirms direction.
+    \item \textbf{Why Good Returns}: Captures momentum shifts in trending markets, with \%K reducing false signals.
+\end{itemize}
+
+\subsection{7. RSI (Now Stochastic RSI)}
+\begin{itemize}
+    \item \textbf{Details}: Originally RSI-based, now uses Stochastic RSI. Entry when \%K < 20 and \%K crosses above \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{RSI}: \( RSI = 100 - \frac{100}{1 + \frac{\text{Avg Gain}}{\text{Avg Loss}}} \), 14-period momentum.
+        \item \textbf{StochRSI \%K}: \( \%K = \frac{\text{RSI} - \min(\text{RSI}, 14)}{\max(\text{RSI}, 14) - \min(\text{RSI}, 14)} \times 100 \), Stochastic on RSI.
+        \item \textbf{StochRSI \%D}: \( \%D = \frac{\sum_{i=1}^{3} \%K_i}{3} \), 3-period SMA.
+        \item \textbf{Condition}: \( \text{stochrsi\_k} < 20 \land \text{k\_crosses\_d} \), where \( \text{k\_crosses\_d} = (\text{stochrsi\_k}_t > \text{stochrsi\_d}_t) \land (\text{stochrsi\_k}_{t-1} \leq \text{stochrsi\_d}_{t-1}) \).
+    \end{itemize}
+    \item \textbf{Logic}: \%K < 20 signals oversold RSI; crossover confirms reversal.
+    \item \textbf{Why Good Returns}: Mean-reversion catching oversold bounces in ranging markets, with crossover enhancing timing.
+\end{itemize}
+
+\subsection{8. ADX}
+\begin{itemize}
+    \item \textbf{Details}: Uses manually calculated ADX. Entry when ADX > 25 and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{TR}: \( \text{TR} = \max(\text{high} - \text{low}, |\text{high} - \text{close}[t-1]|, |\text{low} - \text{close}[t-1]|) \), True Range.
+        \item \textbf{+DM}: \( \text{up} = \text{high} - \text{high}[t-1], \text{+DM} = \text{up} > \text{down} \land \text{up} > 0 ? \text{up} : 0 \), positive movement.
+        \item \textbf{-DM}: \( \text{down} = \text{low}[t-1] - \text{low}, \text{-DM} = \text{down} > \text{up} \land \text{down} > 0 ? \text{down} : 0 \), negative movement.
+        \item \textbf{Smooth TR/+DM/-DM}: \( \text{smooth\_tr} = \frac{\sum_{i=1}^{14} \text{TR}_i}{14} \), similarly for +DM and -DM.
+        \item \textbf{DI+}: \( \text{di\_plus} = \frac{\text{smooth\_plus\_dm}}{\text{smooth\_tr}} \times 100 \), \textbf{DI-}: \( \text{di\_minus} = \frac{\text{smooth\_minus\_dm}}{\text{smooth\_tr}} \times 100 \).
+        \item \textbf{DX}: \( \text{dx} = \frac{|\text{di\_plus} - \text{di\_minus}|}{\text{di\_plus} + \text{di\_minus}} \times 100 \), directional strength.
+        \item \textbf{ADX}: \( \text{adx} = \frac{\sum_{i=1}^{14} \text{dx}_i}{14} \), smoothed trend strength.
+        \item \textbf{Condition}: \( \text{adx} > 25 \land \text{stochrsi\_k} > \text{stochrsi\_d} \), strong trend with momentum.
+    \end{itemize}
+    \item \textbf{Logic}: ADX > 25 indicates trend strength; \%K > \%D ensures bullish direction.
+    \item \textbf{Why Good Returns}: Identifies strong trends, profitable in trending markets, with momentum alignment.
+\end{itemize}
+
+\subsection{9. ATR}
+\begin{itemize}
+    \item \textbf{Details}: Uses ATR for an upper band (close + ATR). Entry when price exceeds it and Stochastic RSI \%K is rising.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{TR}: \( \text{TR} = \max(\text{high} - \text{low}, |\text{high} - \text{close}[t-1]|, |\text{low} - \text{close}[t-1]|) \).
+        \item \textbf{ATR}: \( \text{ATR} = \frac{\sum_{i=1}^{14} \text{TR}_i}{14} \), 14-period average volatility.
+        \item \textbf{Upper Band}: \( \text{close} + \text{atr} \), volatility threshold.
+        \item \textbf{Condition}: \( \text{close} > \text{upper\_band} \land \text{k\_rising} \), breakout with increasing momentum.
+    \end{itemize}
+    \item \textbf{Logic}: Price exceeding close + ATR signals volatility breakout; \%K rising confirms momentum.
+    \item \textbf{Why Good Returns}: Captures volatility-driven moves in trending markets, with \%K filtering noise.
+\end{itemize}
+
+\subsection{10. VWMA}
+\begin{itemize}
+    \item \textbf{Details}: Uses Volume-Weighted Moving Average (20-period). Entry when price is above VWMA and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{VWMA}: \( \text{VWMA} = \frac{\sum_{i=1}^{20} (\text{close}_i \times \text{volume}_i)}{\sum_{i=1}^{20} \text{volume}_i} \), volume-weighted price average.
+        \item \textbf{Condition}: \( \text{close} > \text{vwma} \land \text{stochrsi\_k} > \text{stochrsi\_d} \), price above trend with momentum.
+    \end{itemize}
+    \item \textbf{Logic}: VWMA reflects volume-supported price levels; \%K > \%D confirms bullish momentum.
+    \item \textbf{Why Good Returns}: Strong in volume-driven trends, with \%K reducing noise in choppy markets.
+\end{itemize}
+
+\subsection{11. Donchian Channel}
+\begin{itemize}
+    \item \textbf{Details}: Uses the upper Donchian channel (highest high over 20 periods). Entry when price exceeds it and Stochastic RSI \%K > 20.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Upper}: \( \text{upper} = \max(\text{high}, 20) \), highest high over 20 periods.
+        \item \textbf{Condition}: \( \text{close} > \text{upper} \land \text{stochrsi\_k} > 20 \), breakout with momentum not oversold.
+    \end{itemize}
+    \item \textbf{Logic}: Breaking the 20-period high signals a breakout; \%K > 20 avoids oversold false signals.
+    \item \textbf{Why Good Returns}: Captures strong uptrends or breakouts, effective in trending markets.
+\end{itemize}
+
+\subsection{12. Keltner Channel}
+\begin{itemize}
+    \item \textbf{Details}: Uses Keltner Channel (20-period EMA ± 2 * ATR). Entry when price exceeds the upper band and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{EMA}: \( \text{EMA}_t = \text{close} \times \frac{2}{20+1} + \text{EMA}_{t-1} \times \left(1 - \frac{2}{20+1}\right) \), exponential trend.
+        \item \textbf{ATR}: \( \text{ATR} = \frac{\sum_{i=1}^{20} \text{TR}_i}{20} \), volatility measure.
+        \item \textbf{Upper}: \( \text{ema} + 2 \times \text{atr} \), volatility-adjusted breakout level.
+        \item \textbf{Condition}: \( \text{close} > \text{upper} \land \text{stochrsi\_k} > \text{stochrsi\_d} \), breakout with momentum.
+    \end{itemize}
+    \item \textbf{Logic}: Combines trend and volatility; \%K > \%D confirms bullish direction.
+    \item \textbf{Why Good Returns}: Strong in trending volatile markets, with \%K enhancing reliability.
+\end{itemize}
+
+\subsection{13. SuperTrend}
+\begin{itemize}
+    \item \textbf{Details}: Uses manual SuperTrend (10-period ATR, factor 3). Entry when trend is bullish (direction < 0) and Stochastic RSI \%K crosses 20.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{ATR}: \( \text{ATR} = \frac{\sum_{i=1}^{10} \text{TR}_i}{10} \), volatility.
+        \item \textbf{HL2}: \( \text{hl2} = \frac{\text{high} + \text{low}}{2} \), midpoint.
+        \item \textbf{Upper Basic}: \( \text{hl2} + 3 \times \text{atr} \), \textbf{Lower Basic}: \( \text{hl2} - 3 \times \text{atr} \), trend bands.
+        \item \textbf{SuperTrend}: \( \text{supertrend}_t = \text{close}_{t-1} > \text{supertrend}_{t-1} ? \text{lower\_basic} : \text{upper\_basic} \), persists or flips.
+        \item \textbf{Direction}: \( -1 \) if \( \text{close} > \text{supertrend} \) (bullish), \( 1 \) if below (bearish).
+        \item \textbf{Condition}: \( \text{direction} < 0 \land \text{k\_crosses\_20} \), bullish trend with momentum shift.
+    \end{itemize}
+    \item \textbf{Logic}: Adaptive trend-following; \%K crossing 20 times entries.
+    \item \textbf{Why Good Returns}: Excels in sustained trends, with precise momentum timing.
+\end{itemize}
+
+\subsection{14. Fibonacci}
+\begin{itemize}
+    \item \textbf{Details}: Uses 61.8\% Fibonacci retracement over 20 periods. Entry when price is within 5\% tolerance and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{High}: \( \text{high\_level} = \max(\text{high}, 20) \), \textbf{Low}: \( \text{low\_level} = \min(\text{low}, 20) \).
+        \item \textbf{Fib 61.8\%}: \( \text{fib\_618} = \text{low\_level} + (\text{high\_level} - \text{low\_level}) \times 0.618 \), key retracement.
+        \item \textbf{Price Range}: \( \text{price\_range} = \text{high\_level} - \text{low\_level} \), total range.
+        \item \textbf{Tolerance}: \( \text{tolerance} = \text{price\_range} \times 0.05 \), allowable deviation.
+        \item \textbf{Condition}: \( |\text{close} - \text{fib\_618}| < \text{tolerance} \land \text{stochrsi\_k} > \text{stochrsi\_d} \).
+    \end{itemize}
+    \item \textbf{Logic}: Expects bounce at 61.8\% level; \%K > \%D confirms bullish move.
+    \item \textbf{Why Good Returns}: Mean-reversion at key levels, strong in ranging markets with momentum.
+\end{itemize}
+
+\subsection{15. Price Action}
+\begin{itemize}
+    \item \textbf{Details}: Uses bullish candle (close > open). Entry when true and Stochastic RSI \%K crosses \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Bullish Candle}: \( \text{close} > \text{open} \), simple price action signal.
+        \item \textbf{Condition}: \( \text{bullish\_candle} \land \text{k\_crosses\_d} \), momentum crossover confirmation.
+    \end{itemize}
+    \item \textbf{Logic}: Captures short-term bullish reversals; \%K crossover confirms momentum shift.
+    \item \textbf{Why Good Returns}: Effective in trending or choppy markets, with precise \%K timing.
+\end{itemize}
+
+\subsection{16. Volume Spike}
+\begin{itemize}
+    \item \textbf{Details}: Uses volume > 2x 20-period average. Entry when true and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Avg Volume}: \( \text{avg\_volume} = \frac{\sum_{i=1}^{20} \text{volume}_i}{20} \), baseline volume.
+        \item \textbf{Spike}: \( \text{volume} > 2 \times \text{avg\_volume} \), unusual surge.
+        \item \textbf{Condition}: \( \text{volume} > 2 \times \text{avg\_volume} \land \text{stochrsi\_k} > \text{stochrsi\_d} \).
+    \end{itemize}
+    \item \textbf{Logic}: High volume signals big moves; \%K > \%D confirms direction.
+    \item \textbf{Why Good Returns}: Captures breakout or trend starts driven by volume, strong in volatile markets.
+\end{itemize}
+
+\subsection{17. Momentum}
+\begin{itemize}
+    \item \textbf{Details}: Uses momentum (close - close[10]). Entry when positive and Stochastic RSI \%K is rising.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Momentum}: \( \text{momentum} = \text{close}_t - \text{close}_{t-10} \), price change over 10 periods.
+        \item \textbf{Condition}: \( \text{momentum} > 0 \land \text{k\_rising} \), positive change with increasing momentum.
+    \end{itemize}
+    \item \textbf{Logic}: Identifies accelerating trends; \%K rising confirms continuation.
+    \item \textbf{Why Good Returns}: Strong in momentum-driven uptrends, with \%K enhancing persistence.
+\end{itemize}
+
+\subsection{18. Williams \%R}
+\begin{itemize}
+    \item \textbf{Details}: Uses manual Williams \%R. Entry when < -80 and Stochastic RSI \%K crosses \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{WillR}: \( \text{willr} = \frac{\max(\text{high}, 14) - \text{close}}{\max(\text{high}, 14) - \min(\text{low}, 14)} \times -100 \), oscillator (0 to -100).
+        \item \textbf{Condition}: \( \text{willr} < -80 \land \text{k\_crosses\_d} \), oversold with reversal.
+    \end{itemize}
+    \item \textbf{Logic}: Signals oversold; \%K crossover confirms bullish reversal.
+    \item \textbf{Why Good Returns}: Mean-reversion in ranging markets, with \%K improving timing.
+\end{itemize}
+
+\subsection{19. CMF}
+\begin{itemize}
+    \item \textbf{Details}: Uses manual Chaikin Money Flow. Entry when > 0 and Stochastic RSI \%K > \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{Multiplier}: \( \text{multiplier} = \frac{(\text{close} - \text{low}) - (\text{high} - \text{close})}{\text{high} - \text{low}} \), price position (-1 to 1).
+        \item \textbf{Money Flow Volume}: \( \text{money\_flow\_volume} = \text{multiplier} \times \text{volume} \).
+        \item \textbf{CMF}: \( \text{cmf} = \frac{\sum_{i=1}^{20} \text{money\_flow\_volume}_i}{\sum_{i=1}^{20} \text{volume}_i} \), approximated via SMA.
+        \item \textbf{Condition}: \( \text{cmf} > 0 \land \text{stochrsi\_k} > \text{stochrsi\_d} \).
+    \end{itemize}
+    \item \textbf{Logic}: Positive CMF indicates buying pressure; \%K > \%D confirms direction.
+    \item \textbf{Why Good Returns}: Detects volume-supported uptrends, strong in bullish markets.
+\end{itemize}
+
+\subsection{20. OBV}
+\begin{itemize}
+    \item \textbf{Details}: Uses manual On-Balance Volume. Entry when rising and Stochastic RSI \%K crosses \%D.
+    \item \textbf{Mathematical Concept}:
+    \begin{itemize}
+        \item \textbf{OBV}: \( \text{OBV}_t = \text{OBV}_{t-1} + (\text{close}_t > \text{close}_{t-1} ? \text{volume}_t : \text{close}_t < \text{close}_{t-1} ? -\text{volume}_t : 0) \), cumulative volume trend.
+        \item \textbf{Condition}: \( \text{obv} > \text{obv}[t-1] \land \text{k\_crosses\_d} \), rising volume with momentum shift.
+    \end{itemize}
+    \item \textbf{Logic}: Rising OBV signals bullish volume trend; \%K crossover times entry.
+    \item \textbf{Why Good Returns}: Tracks volume-driven trends, effective in trending markets with confirmation.
+\end{itemize}

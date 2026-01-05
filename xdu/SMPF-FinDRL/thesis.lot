@@ -1,0 +1,23 @@
+\vspace {10pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {2.1}{\ignorespaces FinDRL - Dynamic Strategy Handler}}{11}{table.caption.15}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Summary of FinDRL Strategies}}{21}{table.caption.36}%
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {3.1}{\ignorespaces Strategy Optimization with Bayesian Selection}}{28}{table.caption.39}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Performance Metrics of Trading Strategies with Final Balance}}{29}{table.caption.40}%
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {4.1}{\ignorespaces LSTM Model for Stock Price Prediction}}{36}{table.caption.42}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces GRU Model for Stock Price Prediction}}{37}{table.caption.43}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces CNN Model for Stock Price Prediction}}{37}{table.caption.44}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Hyperparameter Tuning for LSTM, GRU, CNN}}{38}{table.caption.45}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces CombinedModel Training Pseudocode}}{39}{table.caption.46}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Backtesting Results for StockTrader with CNN, GRU, and LSTM Models}}{40}{table.caption.47}%
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {5.1}{\ignorespaces DataProcessor Algorithm for Financial Data Preprocessing}}{48}{table.caption.50}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces OptimizeDNN Algorithm for Deep Neural Network Tuning}}{49}{table.caption.51}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces TradingEnvStep Algorithm for Trading Environment Dynamics}}{50}{table.caption.52}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces DRLAgentTrain Algorithm for Deep Q-Network Training}}{51}{table.caption.53}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Reinforcement Learning Training Results: Episodes 1 to 100}}{52}{table.caption.54}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}

@@ -1,0 +1,110 @@
+\documentclass{xdupgthesis}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{anyfontsize} % For precise font size control
+\usepackage{array} % For table formatting
+% \usepackage[utf8]{inputenc}
+% \usepackage[natbib=true, style=apa]{bibentry}
+% \nobibliography*
+% \setCJKmainfont[Path = fonts/, BoldFont = AdobeFangsongStd-Regular.otf]{AdobeFangsongStd-Regular.otf}
+
+\graphicspath{{AllImagesForUse/}}
+\DeclareGraphicsExtensions{.pdf}
+
+\xdusetup{
+     style = {
+        cjk-font = fandol,
+        latin-font = gyre,
+        en-cjk-font = true,
+        unicode-math = {amsmath},
+        page-vertical-align = {分散对齐},
+        customize-los = true,
+        customize-loa = true
+    },
+    info = {
+        student-id = {22036212602},
+        title = {Stock Market Price Forecasting Using\\
+        Deep Reinforcement Learning Techniques},
+        author = {ABU SAYEM MD HABIBULLAH（马友光）},
+        department = {School of Computer Science and Technology},
+        major = {Computer Science and Technology},
+        supervisor = {Prof. Wang Shuzhen（王书振）},
+        degree = 工程硕士,
+        keywords* = {Deep reinforcement learning, stock market prediction, financial time series prediction, algorithmic trading, Bayesian optimization},
+        keywords = {深度强化学习, 股市预测, 金融时间序列预测, 算法交易, 贝叶斯优化},
+        abstract* = {chapters/abstract.tex},
+        abstract = {chapters/abstractcn.tex},
+        bib-resource = {
+            bib/dl.bib,
+            bib/bop.bib,
+            bib/findrl.bib,
+            bib/stratigies.bib, 
+        },
+        acknowledgements = {chapters/acknowledgements.tex},
+        appendix = {chapters/appendix.tex},
+        los = {chapters/symbols.tex},
+        loa = {chapters/abbreviation.tex}
+    }
+}
+
+
+% Table of Contents, List of Figures, List of Tables
+\begin{document}
+% \listoffigures
+% \listoftables
+\newpage
+% \tableofcontents
+
+% Chapter: Introduction
+\include{chapters/introduction} 
+
+% Chapter: Litarature Review
+% \include{chapters/introduction} 
+% \fbox{\includegraphics[width=0.7\textwidth]{performance/unsplash.jpg}}
+% Chapter 01:
+\include{chapters/ch1-20TradingStrategies}
+
+% Chapter 02:
+\include{chapters/ch2-OptimizingIndicators}
+
+% Chapter 03:
+\include{chapters/ch3-GRU-CNN-LSTM-For-StockPrediction}
+
+% Chapter 04:
+\include{chapters/ch4-FinDRL}
+
+% Chapter 04:
+\include{chapters/ch5-exp-setup}
+
+\include{chapters/conclusion}
+
+% \include{chapters/abbreviation}
+
+\end{document}
+
+
+% chapter 1: Deep Learning for Stock Market Prediction: To Forecasting and Decision-Making
+% \include{chapters/ch1-Deep Learning for Stock Market Prediction}
+
+% chapter 2: GRU-SVM for Stock Market Prediction: A Hybrid Approach to Forecasting and Decision-Making
+% chapter 3: RNN for Stock Market Prediction: A Hybrid Approach to Forecasting and Decision-Making
+% chapter 4: LSTM for Stock Market Prediction: A Hybrid Approach to Forecasting and Decision-Making
+% chapter 5: Deep Reinforcement Learning for Stock Market Prediction: A Hybrid Approach to Forecasting and Decision-Making
+
+
+
+
+% \include{chapters/ch2-Literature Review} % Here are several chapters, each of which is an individual file.
+% \include{chapters/chapter3} % Here are several chapters, each of which is an individual file.
+% \include{chapters/chapter4} % Here are several chapters, each of which is an individual file.
+% \include{chapters/chapter5} % Here are several chapters, each of which is an individual file.
+%\include{chapters/chapter6} % Here are several chapters, each of which is an individual file.
+%\include{chapters/cybrg} % Here are several chapters, each of which is an individual file.
+%\include{chapters/conclusion} % Here are several chapters, each of which is an individual file.
+%\include{chapters/thanks} % This file is the
+% \include{chapters/resume} % This file is your CV

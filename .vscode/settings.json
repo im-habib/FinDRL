@@ -1,0 +1,17 @@
+{
+    "python.analysis.autoFormatStrings": true,
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.autoComplete.extraPaths": [
+        "./penv/lib/python3.13/site-packages"
+    ],
+    "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingModuleSource": "none"
+},
+"editor.wordWrap": "on",
+// "latex-workshop.latex.option.maxPrintLine.enabled": true,
+"editor.wrappingStrategy": "simple",
+"diffEditor.wordWrap": "on",
+"notebook.output.wordWrap": false,
+"latex-workshop.formatting.latexindent.path": "latexindent"
+}

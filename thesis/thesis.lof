@@ -1,0 +1,36 @@
+\vspace {10pt}
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Thesis Chapters by Chapters Workflow}}{2}{figure.caption.14}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Strategy Performance}}{10}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces MA Crossover Strategy Performance}}{12}{figure.caption.17}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces MA Crossover Strategy Performance}}{12}{figure.caption.18}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Parabolic SAR Strategy Performance}}{13}{figure.caption.19}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces SuperTrend Strategy Performance}}{13}{figure.caption.20}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces MA Crossover Strategy Performance}}{14}{figure.caption.21}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Ichimoku Cloud Strategy Performance}}{14}{figure.caption.22}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces ADX Strategy Performance}}{14}{figure.caption.23}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Gaussian Channel Strategy Performance}}{15}{figure.caption.24}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Parabolic SAR Strategy Performance}}{15}{figure.caption.25}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Donchian Channel Strategy Performance}}{16}{figure.caption.26}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Keltner Channel Strategy Performance}}{16}{figure.caption.27}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces ATR Strategy Performance}}{16}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Volume Spike Strategy Performance}}{17}{figure.caption.29}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Stochastic Strategy Performance}}{17}{figure.caption.30}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Williams \%R Strategy Performance}}{18}{figure.caption.31}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Fibonacci Strategy Performance}}{18}{figure.caption.32}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Price Action Strategy Performance}}{18}{figure.caption.33}%
+\contentsline {figure}{\numberline {2.19}{\ignorespaces VWMA Strategy Performance}}{19}{figure.caption.34}%
+\contentsline {figure}{\numberline {2.20}{\ignorespaces CMF Strategy Performance}}{19}{figure.caption.35}%
+\contentsline {figure}{\numberline {2.21}{\ignorespaces OBV Strategy Performance}}{19}{figure.caption.36}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Bayesian Optimization Workflow}}{26}{figure.caption.38}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Bayesian Optimization Performance Analysis}}{28}{figure.caption.39}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces DL Architecture}}{37}{figure.caption.42}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces GRU, CNN, and LSTM Model Performance}}{43}{figure.caption.49}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces DRL Architecture}}{50}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces FinDRL Agent Performance}}{56}{figure.caption.56}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
